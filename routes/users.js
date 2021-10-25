@@ -22,17 +22,26 @@ function validacao(request, response, next) {
   }
 }
 
-router.post('/', validacao, function(req, res, next) {
+router.post('/', validacao, async function(req, res, next) {
+  // SELECT * FROM usuarios WHERE email = 'edvaldoszy@gmail.com'
+  const usuarioExistente = await modelos.Usuario
+    .where('email', '=', req.body.email)
+    .fetch();
+  if (usuarioExistente) {
+    res.status(400).json({
+      mensagem: 'O endereço de e-mail já está cadastrado'
+    });
+    return;
+  }
+  
   const usuario = new modelos.Usuario({
     nome: req.body.nome,
     email: req.body.email,
     senha: req.body.senha,
   });
 
-  usuario.save()
-    .then(retorno => {
-      res.status(201).json(retorno);
-    });
+  const retorno = await usuario.save();
+  res.status(201).json(retorno);
 });
 
 module.exports = router;

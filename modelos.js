@@ -12,6 +12,10 @@ const bookshelf = require('bookshelf')(knex);
 
 const Usuario = bookshelf.model('Usuario', {
   tableName: 'usuarios',
+  requireFetch: false,
+  hidden: [
+    'senha'
+  ],
 });
 
 exports.Usuario = Usuario;
