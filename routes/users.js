@@ -2,13 +2,14 @@ var express = require('express');
 var router = express.Router();
 const Joi = require('joi');
 const modelos = require('../modelos');
+const criptografia = require('../helpers/criptografia');
 
 /* GET users listing. */
 router.get('/', function(req, res, next) {
   res.send('respond with a resource');
 });
 
-function validacao(request, response, next) {
+function validacaoCadastro(request, response, next) {
   const schema = Joi.object({
     nome: Joi.string().min(1).max(200).required(),
     email: Joi.string().min(1).max(200).required(),
@@ -22,7 +23,7 @@ function validacao(request, response, next) {
   }
 }
 
-router.post('/', validacao, async function(req, res, next) {
+router.post('/', validacaoCadastro, async function(req, res, next) {
   // SELECT * FROM usuarios WHERE email = 'edvaldoszy@gmail.com'
   const usuarioExistente = await modelos.Usuario
     .where('email', '=', req.body.email)
@@ -37,7 +38,7 @@ router.post('/', validacao, async function(req, res, next) {
   const usuario = new modelos.Usuario({
     nome: req.body.nome,
     email: req.body.email,
-    senha: req.body.senha,
+    senha: criptografia.geraHash(req.body.senha),
   });
 
   const retorno = await usuario.save();
