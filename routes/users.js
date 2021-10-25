@@ -1,6 +1,7 @@
 var express = require('express');
 var router = express.Router();
 const Joi = require('joi');
+const modelos = require('../modelos');
 
 /* GET users listing. */
 router.get('/', function(req, res, next) {
@@ -22,7 +23,16 @@ function validacao(request, response, next) {
 }
 
 router.post('/', validacao, function(req, res, next) {
-  res.send('respond with a resource');
+  const usuario = new modelos.Usuario({
+    nome: req.body.nome,
+    email: req.body.email,
+    senha: req.body.senha,
+  });
+
+  usuario.save()
+    .then(retorno => {
+      res.status(201).json(retorno);
+    });
 });
 
 module.exports = router;
