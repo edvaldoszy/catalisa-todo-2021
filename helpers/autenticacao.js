@@ -11,7 +11,7 @@ async function autenticacao(req, res, next) {
       .fetch();
     
     if (usuario) {
-      req.usuario = usuario.toJSON();
+      req.usuario = usuario;
       next();
     } else {
       res.status(401).json({
