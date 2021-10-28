@@ -18,4 +18,10 @@ const Usuario = bookshelf.model('Usuario', {
   ],
 });
 
+const Tarefa = bookshelf.model('Tarefa', {
+  tableName: 'tarefas',
+  requireFetch: false,
+});
+
 exports.Usuario = Usuario;
+exports.Tarefa = Tarefa;

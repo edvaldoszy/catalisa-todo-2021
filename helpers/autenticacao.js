@@ -6,6 +6,7 @@ async function autenticacao(req, res, next) {
   const payload = jwt.validaToken(token);
 
   if (payload) {
+    // SELECT * FROM usuarios WHERE id = 10
     const usuario = await modelos.Usuario
       .where('id', payload.id)
       .fetch();

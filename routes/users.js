@@ -4,6 +4,7 @@ const Joi = require('joi');
 const modelos = require('../modelos');
 const criptografia = require('../helpers/criptografia');
 const jwt = require('../helpers/jwt');
+const autenticacao = require('../helpers/autenticacao');
 
 /* GET users listing. */
 router.get('/', function(req, res, next) {
