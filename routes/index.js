@@ -4,19 +4,22 @@ const modelos = require('../modelos');
 const autenticacao = require('../helpers/autenticacao');
 const Joi = require('joi');
 
-/* GET home page. */
-router.get('/', function(req, res, next) {
-  res.render('index', { title: 'Express' });
+router.get('/', autenticacao, async function(req, res, next) {
+  // SELECT * FROM terefas WHERE usuario_id = ?
+  const retorno = await modelos.Tarefa
+    .where('usuario_id', '=', req.usuario.get('id'))
+    .fetchAll();
+  res.json(retorno);
 });
 
-function validacaoCadastro(request, response, next) {
+function validacaoCadastro(req, res, next) {
   const schema = Joi.object({
     titulo: Joi.string().min(1).max(300).required(),
     concluida: Joi.boolean().required(),
   });
-  const resultado = schema.validate(request.body);
+  const resultado = schema.validate(req.body);
   if (resultado.error) {
-    response.status(400).json(resultado.error);
+    res.status(400).json(resultado.error);
   } else {
     next();
   }
@@ -27,7 +30,7 @@ router.post('/', validacaoCadastro, autenticacao, async function(req, res, next)
     titulo: req.body.titulo,
     concluida: req.body.concluida,
     data_criacao: new Date(),
-    usuario_id: req.usuario.get('id')
+    usuario_id: req.usuario.get('id'),
   });
 
   const retorno = await tarefa.save();
