@@ -1,5 +1,5 @@
-var express = require('express');
-var router = express.Router();
+const express = require('express');
+const router = express.Router();
 const modelos = require('../modelos');
 const autenticacao = require('../helpers/autenticacao');
 const Joi = require('joi');
@@ -27,7 +27,6 @@ function validacaoAlteracao(req, res, next) {
 
 router.put('/:id', validacaoAlteracao, autenticacao, async function (req, res, next) {
   // SELECT * FROM tarefas WHERE id = 3 AND usuario_id = 12
-
   const tarefaExistente = await modelos.Tarefa
     .where('id', '=', req.params.id)
     .where('usuario_id', '=', req.usuario.get('id'))

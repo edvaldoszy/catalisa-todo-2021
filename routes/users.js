@@ -1,10 +1,9 @@
-var express = require('express');
-var router = express.Router();
+const express = require('express');
+const router = express.Router();
 const Joi = require('joi');
 const modelos = require('../modelos');
 const criptografia = require('../helpers/criptografia');
 const jwt = require('../helpers/jwt');
-const autenticacao = require('../helpers/autenticacao');
 
 /* GET users listing. */
 router.get('/', function(req, res, next) {
@@ -78,8 +77,6 @@ router.post('/login', validaLogin, async function (req, res) {
         mensagem: 'As credenciais são inválidas',
       });
     }
-    // res.json(usuarioExistente);
-    // return;
   } else {
     res.status(400).json({
       mensagem: 'As credenciais são inválidas',
