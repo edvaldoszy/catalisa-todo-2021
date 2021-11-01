@@ -45,6 +45,23 @@ router.put('/:id', validacaoAlteracao, autenticacao, async function (req, res, n
   res.json(retorno);
 });
 
+router.delete('/:id', autenticacao, async function (req, res, next) {
+  // SELECT * FROM tarefas WHERE id = 3 AND usuario_id = 12
+  const tarefaExistente = await modelos.Tarefa
+    .where('id', '=', req.params.id)
+    .where('usuario_id', '=', req.usuario.get('id'))
+    .fetch();
+  if (!tarefaExistente) {
+    res.status(400).json({
+      mensagem: 'A tarefa não existe'
+    });
+    return;
+  }
+
+  await tarefaExistente.destroy();
+  res.json(tarefaExistente);
+});
+
 function validacaoCadastro(req, res, next) {
   const schema = Joi.object({
     titulo: Joi.string().min(1).max(300).required(),
