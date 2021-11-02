@@ -45,6 +45,29 @@ router.put('/:id', validacaoAlteracao, autenticacao, async function (req, res, n
   res.json(retorno);
 });
 
+router.put('/:id/conclusao' , autenticacao, async function (req, res, next) {
+  const tarefaExistente = await modelos.Tarefa
+    .where('id', '=', req.params.id)
+    .where('usuario_id', '=', req.usuario.get('id'))
+    .fetch();
+  if (!tarefaExistente) {
+    res.status(400).json({
+      mensagem: 'A tarefa não existe'
+    });
+    return;
+  }
+
+  const concluida = tarefaExistente.get('concluida') === 1;
+  if (concluida) {
+    tarefaExistente.set('concluida', false);
+  } else {
+    tarefaExistente.set('concluida', true);
+  }
+
+  const retorno = await tarefaExistente.save();
+  res.json(retorno);
+});
+
 router.delete('/:id', autenticacao, async function (req, res, next) {
   // SELECT * FROM tarefas WHERE id = 3 AND usuario_id = 12
   const tarefaExistente = await modelos.Tarefa
@@ -59,7 +82,7 @@ router.delete('/:id', autenticacao, async function (req, res, next) {
   }
 
   await tarefaExistente.destroy();
-  res.json(tarefaExistente);
+  res.sendStatus(204);
 });
 
 function validacaoCadastro(req, res, next) {
